@@ -21,7 +21,7 @@ namespace TEST
        // Form1 form1;
 
 
-     //   MySqlDataAdapter adapter;
+        MySqlDataAdapter adapter;
 
 
         public string sConnstring = "";

@@ -14,7 +14,7 @@ namespace _DB연동_0327_
         [STAThread]
         static void Main()
         {
-            Application.EnableVisualStyles();   
+            Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Form1());
         }
