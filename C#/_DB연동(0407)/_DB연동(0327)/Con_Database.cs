@@ -13,13 +13,11 @@ namespace _DB연동_0327_
 {
     class Con_Database
     {
-        static String constring1 = "Server=localhost;Database=ujindb;Uid=root;Pwd=tryit5826;SslMode=none;Charset=utf8;";
-
+        //static String constring1 = "Server=localhost;Database=ujindb;Uid=root;Pwd=tryit5826;SslMode=none;Charset=utf8;";
+         static String constring1 = "Server=117.17.142.111;Database=cosmosDB;Uid=ujin;Pwd=1234;SslMode=none;Charset=utf8";
         MySqlConnection conn = new MySqlConnection(constring1); //데이터베이스와 연결을 담당하는 객체 생성
-
-         Form1 frm1;
-
-
+        Form1 frm1;
+        
         MySqlDataAdapter adapter;
 
 
@@ -40,11 +38,13 @@ namespace _DB연동_0327_
                 conn.Open();
 
                 string sql = "SELECT * FROM data ORDER BY id";
-              
+
                 adapter = new MySqlDataAdapter(sql, conn);
+
+
                 DataSet ds = new DataSet();
-                
-                adapter.Fill(ds,"data");
+
+                adapter.Fill(ds, "data");
                 frm1.dataGridView1.DataSource = ds.Tables[0];
 
                 conn.Close();
@@ -80,31 +80,40 @@ namespace _DB연동_0327_
 
         }
 
-       
-        public void load_Research()
-        {
-            try
-            {
-                conn.Open();
-                string sql = "SELECT * FROM data where name LIKE '%"+frm1.Text+"%' ";
 
-                adapter = new MySqlDataAdapter(sql, conn);
-                DataSet ds4 = new DataSet();
+        public void deleteFunc(object rc)
+        { //db delete 함수 설정
+            conn.Open();
+            string sql = "delete from data where id = '"+rc.ToString()+"' "; 
+            
+            MySqlCommand cmd = new MySqlCommand(sql, conn);
+            
+            cmd.ExecuteNonQuery();
+            conn.Close();
 
-                adapter.Fill(ds4, "data");
-                frm1.dataGridView1.DataSource = ds4.Tables[0];
-           
+            ConnectDB();
 
-               conn.Close();
-            }
+        }
+        public void addFunc()
+        { //db delete 함수 설정
+            //insert-> 삽입 과 추가
 
-            catch (Exception e)
-            {
-                System.Windows.Forms.MessageBox.Show(e.ToString());
-                conn.Close();
-            }
+            conn.Open();
+            
+            string sql = "insert into data values < 'id','name','phone_number','e_mail','address'> ";
+            
 
-            }
+            MySqlCommand cmd = new MySqlCommand(sql, conn);
+
+            cmd.ExecuteNonQuery();
+            conn.Close();
+
+            ConnectDB();
+
         }
 
+
+
+
     }
+}

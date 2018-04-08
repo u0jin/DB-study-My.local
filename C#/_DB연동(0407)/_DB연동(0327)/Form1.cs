@@ -16,20 +16,21 @@ namespace _DB연동_0327_
         Con_Database db;
        int index=1; //전역변수 (Column의 index 선택하는)
                     //Default 검색은 NAME
-
+       object rc;
         public Form1()
         {
             InitializeComponent();
             db = new Con_Database(this);
-
+         
             db.ConnectDB();
         }
 
+        
         //index==0 -> ID순
         //index==1 -> NAME순
-        //index==2 -> E-Mail순
+        //index==2 -> PhoneNumber순 
         //index==3 -> Address순
-        //index==4 -> PhoneNumber순
+        //index==4 -> E-Mail순
         private void button_Click(object sender, EventArgs e)  
         {
             string Mysql="";
@@ -44,15 +45,15 @@ namespace _DB연동_0327_
             }
             else if (index == 2)
             {
-                Mysql = "SELECT * FROM data where email LIKE '%" + textBox1.Text + "%' ";
+                Mysql = "SELECT * FROM data where phone_number LIKE '%" + textBox1.Text + "%' ";
             }
             else if (index == 3)
             {
-                Mysql = "SELECT * FROM data where address LIKE '%" + textBox1.Text + "%' ";
+                Mysql = "SELECT * FROM data where e_mail LIKE '%" + textBox1.Text + "%' ";
             }
             else if (index == 4)
             {
-                Mysql = "SELECT * FROM data where phonenumber LIKE '%" + textBox1.Text + "%' ";
+                Mysql = "SELECT * FROM data where address LIKE '%" + textBox1.Text + "%' ";
             }
 
             DataTable dt = db.GetDBTable(Mysql);
@@ -64,7 +65,8 @@ namespace _DB연동_0327_
      
 
         private void textBox1_KeyPress(object sender, KeyPressEventArgs e)
-        {
+        {        //특정 키 버튼 처리-키를 처음 누를때 처리되는것
+
             if (e.KeyChar == '\r')
             {
                 button_Click(sender, e);    //이름 기준
@@ -82,7 +84,7 @@ namespace _DB연동_0327_
             if (comboBox1.SelectedIndex >= 0)
             {
               //  MessageBox(comboBox1.SelectedIndex.ToString());
-             //   MessageBox.Show(comboBox1.SelectedIndex.ToString());// 인덱스 출력
+              //  MessageBox.Show(comboBox1.SelectedIndex.ToString());// 인덱스 출력
                 index = comboBox1.SelectedIndex;
                 //this.itemSelected = comboDropDown.SelectedItem as string;
 
@@ -91,16 +93,71 @@ namespace _DB연동_0327_
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            string[] data = { "ID", "Name", "E-mail", "Address", "Phone_number" };
+            string[] data = { "ID", "Name", "Phone_number", "E-mail", "Address" };
             //comboBox1.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBox1.Text = "Column";
             comboBox1.Items.AddRange(data); //배열
     
         }
 
+        //private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        //{ //현재셀의 row index
+        //    object rc = dataGridView1.CurrentCell.Value;  //for find the row index number
+        //    MessageBox.Show("Current Row Index is = " + rc.ToString());
+        //}
 
-        //특정 키 버튼 처리-키를 처음 누를때 처리되는것
-      
+        private void dataGridView1_RowHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        { //행을 선택-> 그 id값을 불러옴
+            rc = dataGridView1.CurrentCell.Value;  //for find the row index number
+           // MessageBox.Show("Current Row Index is = " + rc.ToString());
+        }
+
+        private void deleteButton_Click(object sender, EventArgs e)
+        {
+            //db.deleteFunc() 호출
+            try
+            {
+                db.deleteFunc(rc);
+            }
+            catch (Exception e1)
+            {
+                MessageBox.Show("Please click row header");
+            }
+        }
+
+        private void updateButton_Click(object sender, EventArgs e)
+        { //수정->저장 & 추가-> 저장
+
+            //추가 버튼
+            try
+            {
+                db.addFunc();
+            }
+            catch (Exception e1)
+            {
+                MessageBox.Show("Please click row header");
+            }
+        }
+
+        private void dataGridView1_CellEnter(object sender, DataGridViewCellEventArgs e)
+        {
+            //girdview에서 셀을 추가할때 발생
+            //db.add(new object[] { "string", 1, true, null });
+            dataGridView1.Rows.Add(1);
+        }
+
+        private void dataGridView1_CellEnter_1(object sender, DataGridViewCellEventArgs e)
+        {
+            dataGridView1.Rows.Add(1);
+            //컨트롤 바인딩을 해제시켜 줘야함
+        }
+
+        //private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
+        //{
+        //    dataGridView1.Rows.Add(1);
+        //}
+
+     
 
     
     }
